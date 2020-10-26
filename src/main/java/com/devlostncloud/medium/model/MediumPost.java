@@ -1,23 +1,24 @@
 package com.devlostncloud.medium.model;
 
-public class MediumPost {
-    private final String title;
-    private final Content content;
-    private final String id;
+import static kong.unirest.Unirest.*;
 
-    private MediumPost(String title, Content content) {
-        this.id = "someId";
-        this.title = title;
-        this.content = content;
+public class MediumPost {
+
+    private MediumData data;
+
+    public MediumData getData() {
+        return data;
     }
 
-    public String getId() {
-        return this.id;
+    public void setData(MediumData data) {
+        this.data = data;
     }
 
     public static class Builder {
         private String title;
         private Content content;
+        private String authorId;
+        private String baseUrl;
 
         private Builder(String title) {
             this.title = title;
@@ -32,8 +33,24 @@ public class MediumPost {
             return this;
         }
 
+        public Builder author(String authorId) {
+            this.authorId = authorId;
+            return this;
+        }
+
+        public Builder baseUrl(String baseUrl) {
+            this.baseUrl = baseUrl;
+            return this;
+        }
+
         public MediumPost publish() {
-            return new MediumPost(title, content);
+            return post(baseUrl + "/v1/users/" + authorId + "/posts")
+                    .header("Accept", "application/json")
+                    .field("title", title)
+                    .field("contentFormat", content.getFormat())
+                    .field("content", content.getBody())
+                    .asObject(MediumPost.class)
+                    .getBody();
         }
     }
 }
