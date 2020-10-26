@@ -1,6 +1,5 @@
-package com.devlostncloud.medium;
+package com.devlostncloud.medium.model;
 
-import com.devlostncloud.medium.model.MediumPost;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import static com.devlostncloud.medium.model.Content.html;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
@@ -33,7 +33,14 @@ class CreateMediumPostTest {
     void createPostWithHtmlContent() {
 
         server.stubFor(post(urlEqualTo("/v1/users/author12345/posts"))
+                .withHeader("Content-Type", equalTo("application/json"))
                 .withHeader("Accept", equalTo("application/json"))
+                .withHeader("Accept-Charset", equalTo("utf-8"))
+                .withRequestBody(equalToJson("{\n" +
+                        "  \"title\": \"How to use Medium API\",\n" +
+                        "  \"contentFormat\": \"html\",\n" +
+                        "  \"content\": \"<h1>Medium API 1</h1>\"\n" +
+                        "}", true, false))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withStatus(201)
@@ -52,11 +59,10 @@ class CreateMediumPostTest {
                                 "  }\n" +
                                 "}")));
 
-
-        MediumPost post = MediumPost.Builder
-                .create("How to use Medium API")
+        MediumPost post = MediumPost.builder()
+                .title("How to use Medium API")
                 .author("author12345")
-                .withContent(html("<h1>Medium API 1</h1>"))
+                .content(html("<h1>Medium API 1</h1>"))
                 .baseUrl(server.baseUrl())
                 .publish();
 
