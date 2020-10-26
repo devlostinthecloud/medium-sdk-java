@@ -1,4 +1,4 @@
-package com.devlostncloud.medium.model;
+package com.devlostncloud.medium;
 
 import kong.unirest.json.JSONObject;
 
@@ -7,20 +7,24 @@ import java.util.Map;
 import static java.lang.String.format;
 import static kong.unirest.Unirest.post;
 
-public class MediumPost {
+public final class MediumPost {
     private static final String MEDIUM_API_BASE_URL = "https://api.medium.com";
     private static final String MEDIUM_API_POSTS_PATH_FORMAT = "/v1/users/%s/posts";
 
     private MediumData data;
 
-    MediumPost() { }
+    private MediumPost() { }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    public MediumData getData() {
-        return data;
+    public String getId() {
+        return data.getId();
+    }
+
+    public String getUrl() {
+        return data.getUrl();
     }
 
     public static class Builder {
@@ -59,6 +63,7 @@ public class MediumPost {
         }
 
         public MediumPost publish() {
+            validate(this);
             return post(format(baseUrl + MEDIUM_API_POSTS_PATH_FORMAT, this.authorId))
                     .header("Content-Type", "application/json")
                     .header("Accept", "application/json")
@@ -66,6 +71,16 @@ public class MediumPost {
                     .body(this.toJSON())
                     .asObject(MediumPost.class)
                     .getBody();
+        }
+
+        private void validate(Builder builder) {
+            if (builder.title == null || "".equals(builder.title.trim())) {
+                throw new IllegalArgumentException("title is required");
+            }
+
+            if (builder.title.length() > 100) {
+                throw new IllegalArgumentException("title exceeds 100 chars max length");
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
-package com.devlostncloud.medium.model;
+package com.devlostncloud.medium;
 
-public class Content {
+public final class Content {
     private static final String HTML_CONTENT = "html";
     private final String body;
     private final String format;
@@ -14,11 +14,11 @@ public class Content {
         return new Content(HTML_CONTENT, body);
     }
 
-    public String getBody() {
+    String getBody() {
         return body;
     }
 
-    public String getFormat() {
+    String getFormat() {
         return format;
     }
 }

@@ -1,4 +1,4 @@
-package com.devlostncloud.medium.model;
+package com.devlostncloud.medium;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

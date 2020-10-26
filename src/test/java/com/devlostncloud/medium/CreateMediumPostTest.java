@@ -1,11 +1,11 @@
-package com.devlostncloud.medium.model;
+package com.devlostncloud.medium;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.devlostncloud.medium.model.Content.html;
+import static com.devlostncloud.medium.Content.html;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
@@ -30,7 +30,7 @@ class CreateMediumPostTest {
     }
 
     @Test
-    void createPostWithHtmlContent() {
+    void createPostWithRequiredHtmlContent() {
 
         server.stubFor(post(urlEqualTo("/v1/users/author12345/posts"))
                 .withHeader("Content-Type", equalTo("application/json"))
@@ -39,7 +39,7 @@ class CreateMediumPostTest {
                 .withRequestBody(equalToJson("{\n" +
                         "  \"title\": \"How to use Medium API\",\n" +
                         "  \"contentFormat\": \"html\",\n" +
-                        "  \"content\": \"<h1>Medium API 1</h1>\"\n" +
+                        "  \"content\": \"<h1>How to use Medium API</h1>\"\n" +
                         "}", true, false))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
@@ -62,11 +62,11 @@ class CreateMediumPostTest {
         MediumPost post = MediumPost.builder()
                 .title("How to use Medium API")
                 .author("author12345")
-                .content(html("<h1>Medium API 1</h1>"))
+                .content(html("<h1>How to use Medium API</h1>"))
                 .baseUrl(server.baseUrl())
                 .publish();
 
-        assertThat(post.getData().getId()).isEqualTo("e6f36a");
-        assertThat(post.getData().getUrl()).isEqualTo("https://medium.com/@majelbstoat/liverpool-fc-e6f36a");
+        assertThat(post.getId()).isEqualTo("e6f36a");
+        assertThat(post.getUrl()).isEqualTo("https://medium.com/@majelbstoat/liverpool-fc-e6f36a");
     }
 }
