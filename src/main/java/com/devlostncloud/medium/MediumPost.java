@@ -81,6 +81,10 @@ public final class MediumPost {
             if (builder.title.length() > 100) {
                 throw new IllegalArgumentException("title exceeds 100 chars max length");
             }
+
+            if(builder.content == null || builder.content.isEmpty()) {
+                throw new IllegalArgumentException("content is required");
+            }
         }
     }
 }

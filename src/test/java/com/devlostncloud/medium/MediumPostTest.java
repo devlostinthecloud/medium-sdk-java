@@ -39,4 +39,18 @@ class MediumPostTest {
 
         assertThat(exception.getMessage()).isEqualTo("title is required");
     }
+
+    @Test
+    public void contentShouldValidateWhenEmpty() {
+
+        Exception exception = assertThrows(IllegalArgumentException.class,
+                () -> MediumPost.builder()
+                        .title("Title")
+                        .content(Content.html(""))
+                        .publish());
+
+        assertThat(exception.getMessage()).isEqualTo("content is required");
+
+        assertThat(true).isEqualTo(true);
+    }
 }

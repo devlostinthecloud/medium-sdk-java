@@ -5,7 +5,7 @@ public final class Content {
     private final String body;
     private final String format;
 
-    Content(String format, String body) {
+    private Content(String format, String body) {
         this.body = body;
         this.format = format;
     }
@@ -20,5 +20,9 @@ public final class Content {
 
     String getFormat() {
         return format;
+    }
+
+    boolean isEmpty() {
+        return this.body == null || "".equals(this.body.trim());
     }
 }
