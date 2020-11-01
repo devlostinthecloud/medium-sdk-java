@@ -72,7 +72,7 @@ class CreatePostTest {
                 .title("How to use Medium API")
                 .author("author12345")
                 .content(html("<h1>How to use Medium API</h1>"))
-                .publish(server.baseUrl());
+                .publishVia(new PostPublisher(server.baseUrl()));
 
         assertThat(post.getId()).isEqualTo("e6f36a");
         assertThat(post.getUrl()).isEqualTo("https://medium.com/@majelbstoat/liverpool-fc-e6f36a");
@@ -121,7 +121,7 @@ class CreatePostTest {
                 .license(CC_40_BY)
                 .canonicalUrl(new URL("https://example.com/original/how-to-use-medium-api"))
                 .notifyFollowers()
-                .publish(server.baseUrl());
+                .publishVia(new PostPublisher(server.baseUrl()));
 
         assertThat(post.getId()).isEqualTo("e6f36a");
         assertThat(post.getUrl()).isEqualTo("https://medium.com/@majelbstoat/liverpool-fc-e6f36a");

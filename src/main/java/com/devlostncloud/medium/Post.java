@@ -1,16 +1,14 @@
 package com.devlostncloud.medium;
 
-import kong.unirest.json.JSONObject;
-
 import java.net.URL;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static com.devlostncloud.medium.License.ALL_RIGHTS_RESERVED;
+import static com.devlostncloud.medium.PostPublisher.mediumPublisher;
 import static com.devlostncloud.medium.PublishStatus.PUBLIC;
-import static java.lang.String.format;
-import static kong.unirest.Unirest.post;
 
 public final class Post {
 
@@ -64,9 +62,6 @@ public final class Post {
     }
 
     public static class Builder {
-        private static final String MEDIUM_API_BASE_URL = "https://api.medium.com";
-        private static final String MEDIUM_API_POSTS_PATH_FORMAT = "/v1/users/%s/posts";
-
         private String title;
         private Content content;
         private String authorId;
@@ -111,36 +106,30 @@ public final class Post {
             return this;
         }
 
-        private JSONObject toJSON() {
-            JSONObject json = new JSONObject();
-            json.put("title", this.title);
-            json.put("contentFormat", this.content.getFormat());
-            json.put("content", this.content.getBody());
+        private Map<String, Object> params() {
+            Map<String, Object> params = new HashMap<>();
+            params.put("title", this.title);
+            params.put("contentFormat", this.content.getFormat());
+            params.put("content", this.content.getBody());
             if (tags != null) {
-                json.put("tags", this.tags);
+                params.put("tags", this.tags);
             }
             if (canonicalUrl != null) {
-                json.put("canonicalUrl", this.canonicalUrl);
+                params.put("canonicalUrl", this.canonicalUrl);
             }
-            json.put("publishStatus", this.status.value());
-            json.put("license", this.license.value());
-            json.put("notifyFollowers", this.notifyFollowers);
-            return json;
-        }
-
-        Post publish(String baseUrl) {
-            validate(this);
-            return post(format(baseUrl + MEDIUM_API_POSTS_PATH_FORMAT, this.authorId))
-                    .header("Content-Type", "application/json")
-                    .header("Accept", "application/json")
-                    .header("Accept-Charset", "utf-8")
-                    .body(this.toJSON())
-                    .asObject(Post.class)
-                    .getBody();
+            params.put("publishStatus", this.status.value());
+            params.put("license", this.license.value());
+            params.put("notifyFollowers", this.notifyFollowers);
+            return params;
         }
 
         public Post publish() {
-            return publish(MEDIUM_API_BASE_URL);
+            return publishVia(mediumPublisher());
+        }
+
+        Post publishVia(PostPublisher postPublisher) {
+            validate(this);
+            return postPublisher.publish(authorId, params());
         }
 
         private void validate(Builder builder) {
@@ -156,14 +145,14 @@ public final class Post {
                 throw new IllegalArgumentException("content is required");
             }
 
-            if(builder.tags != null) {
+            if (builder.tags != null) {
 
                 if (builder.tags.size() > 3) {
                     throw new IllegalArgumentException("tags exceeds 3 max size");
                 }
 
                 for (String tag : tags) {
-                    if(tag.length() > 25) {
+                    if (tag.length() > 25) {
                         throw new IllegalArgumentException("tag exceeds 25 chars max length");
                     }
                 }
