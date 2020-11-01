@@ -6,13 +6,13 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class MediumPostTest {
+class PostTest {
 
     @Test
     void titleShouldValidateMaxLength() {
 
         Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> MediumPost.builder()
+                () -> Post.builder()
                         .title(randomAlphanumeric(101))
                         .publish());
 
@@ -23,7 +23,7 @@ class MediumPostTest {
     void titleShouldValidateEmptyTitle() {
 
         Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> MediumPost.builder()
+                () -> Post.builder()
                         .title("  ")
                         .publish());
 
@@ -34,7 +34,7 @@ class MediumPostTest {
     void titleShouldValidateNullTitle() {
 
         Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> MediumPost.builder()
+                () -> Post.builder()
                         .publish());
 
         assertThat(exception.getMessage()).isEqualTo("title is required");
@@ -44,7 +44,7 @@ class MediumPostTest {
     public void contentShouldValidateWhenEmpty() {
 
         Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> MediumPost.builder()
+                () -> Post.builder()
                         .title("Title")
                         .content(Content.html(""))
                         .publish());
@@ -56,7 +56,7 @@ class MediumPostTest {
     public void tagsShouldValidateListSize() {
 
         Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> MediumPost.builder()
+                () -> Post.builder()
                         .title("Title")
                         .content(Content.html("Some content"))
                         .tags("tag-1", "tag-2", "tag-3", "tag-4")
@@ -69,7 +69,7 @@ class MediumPostTest {
     public void tagsShouldValidateItemLength() {
 
         Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> MediumPost.builder()
+                () -> Post.builder()
                         .title("Title")
                         .content(Content.html("Some content"))
                         .tags("tag-1", "this-tag-is-longer-than-25", "tag-3")
@@ -82,7 +82,7 @@ class MediumPostTest {
     public void tagsShouldValidateNullItem() {
 
         assertThrows(NullPointerException.class,
-                () -> MediumPost.builder()
+                () -> Post.builder()
                         .title("Title")
                         .content(Content.html("Some content"))
                         .tags(null, "tag-2", "tag-3")

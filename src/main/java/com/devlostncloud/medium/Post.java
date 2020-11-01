@@ -3,6 +3,7 @@ package com.devlostncloud.medium;
 import kong.unirest.json.JSONObject;
 
 import java.net.URL;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -11,11 +12,11 @@ import static com.devlostncloud.medium.PublishStatus.PUBLIC;
 import static java.lang.String.format;
 import static kong.unirest.Unirest.post;
 
-public final class MediumPost {
+public final class Post {
 
-    private MediumData data;
+    private Data data;
 
-    private MediumPost() {
+    private Post() {
     }
 
     public static Builder builder() {
@@ -127,18 +128,18 @@ public final class MediumPost {
             return json;
         }
 
-        MediumPost publish(String baseUrl) {
+        Post publish(String baseUrl) {
             validate(this);
             return post(format(baseUrl + MEDIUM_API_POSTS_PATH_FORMAT, this.authorId))
                     .header("Content-Type", "application/json")
                     .header("Accept", "application/json")
                     .header("Accept-Charset", "utf-8")
                     .body(this.toJSON())
-                    .asObject(MediumPost.class)
+                    .asObject(Post.class)
                     .getBody();
         }
 
-        public MediumPost publish() {
+        public Post publish() {
             return publish(MEDIUM_API_BASE_URL);
         }
 
@@ -155,14 +156,17 @@ public final class MediumPost {
                 throw new IllegalArgumentException("content is required");
             }
 
-            if(builder.tags.size() > 3) {
-                throw new IllegalArgumentException("tags exceeds 3 max size");
-            }
+            if(builder.tags != null) {
 
-            for (String tag : tags) {
-              if(tag.length() > 25) {
-                  throw new IllegalArgumentException("tag exceeds 25 chars max length");
-              }
+                if (builder.tags.size() > 3) {
+                    throw new IllegalArgumentException("tags exceeds 3 max size");
+                }
+
+                for (String tag : tags) {
+                    if(tag.length() > 25) {
+                        throw new IllegalArgumentException("tag exceeds 25 chars max length");
+                    }
+                }
             }
         }
     }

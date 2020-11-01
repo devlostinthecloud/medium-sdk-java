@@ -3,7 +3,7 @@ package com.devlostncloud.medium;
 import java.util.ArrayList;
 import java.util.List;
 
-class MediumData {
+class Data {
     private String id;
     private String title;
     private String authorId;

@@ -20,7 +20,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CreateMediumPostTest {
+class CreatePostTest {
 
     private WireMockServer server;
 
@@ -68,7 +68,7 @@ class CreateMediumPostTest {
                                 "  }\n" +
                                 "}")));
 
-        MediumPost post = MediumPost.builder()
+        Post post = Post.builder()
                 .title("How to use Medium API")
                 .author("author12345")
                 .content(html("<h1>How to use Medium API</h1>"))
@@ -113,7 +113,7 @@ class CreateMediumPostTest {
                                 "  }\n" +
                                 "}")));
 
-        MediumPost post = MediumPost.builder()
+        Post post = Post.builder()
                 .title("How to use Medium API")
                 .author("author12345")
                 .content(html("<h1>How to use Medium API</h1>"))
