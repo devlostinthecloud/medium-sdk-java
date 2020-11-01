@@ -154,6 +154,16 @@ public final class MediumPost {
             if (builder.content == null || builder.content.isEmpty()) {
                 throw new IllegalArgumentException("content is required");
             }
+
+            if(builder.tags.size() > 3) {
+                throw new IllegalArgumentException("tags exceeds 3 max size");
+            }
+
+            for (String tag : tags) {
+              if(tag.length() > 25) {
+                  throw new IllegalArgumentException("tag exceeds 25 chars max length");
+              }
+            }
         }
     }
 }

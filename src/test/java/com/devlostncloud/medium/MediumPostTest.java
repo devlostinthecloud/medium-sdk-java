@@ -50,7 +50,42 @@ class MediumPostTest {
                         .publish());
 
         assertThat(exception.getMessage()).isEqualTo("content is required");
+    }
 
-        assertThat(true).isEqualTo(true);
+    @Test
+    public void tagsShouldValidateListSize() {
+
+        Exception exception = assertThrows(IllegalArgumentException.class,
+                () -> MediumPost.builder()
+                        .title("Title")
+                        .content(Content.html("Some content"))
+                        .tags("tag-1", "tag-2", "tag-3", "tag-4")
+                        .publish());
+
+        assertThat(exception.getMessage()).isEqualTo("tags exceeds 3 max size");
+    }
+
+    @Test
+    public void tagsShouldValidateItemLength() {
+
+        Exception exception = assertThrows(IllegalArgumentException.class,
+                () -> MediumPost.builder()
+                        .title("Title")
+                        .content(Content.html("Some content"))
+                        .tags("tag-1", "this-tag-is-longer-than-25", "tag-3")
+                        .publish());
+
+        assertThat(exception.getMessage()).isEqualTo("tag exceeds 25 chars max length");
+    }
+
+    @Test
+    public void tagsShouldValidateNullItem() {
+
+        assertThrows(NullPointerException.class,
+                () -> MediumPost.builder()
+                        .title("Title")
+                        .content(Content.html("Some content"))
+                        .tags(null, "tag-2", "tag-3")
+                        .publish());
     }
 }
