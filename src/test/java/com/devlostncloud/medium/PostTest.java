@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,10 +18,32 @@ import static org.mockito.Mockito.when;
 class PostTest {
 
     @Test
+    void authorShouldValidateEmpty() {
+
+        Exception exception = assertThrows(IllegalArgumentException.class,
+                () -> Post.builder()
+                        .author("  ")
+                        .publish());
+
+        assertThat(exception.getMessage()).isEqualTo("author id is required");
+    }
+
+    @Test
+    void authorShouldValidateNull() {
+
+        Exception exception = assertThrows(IllegalArgumentException.class,
+                () -> Post.builder()
+                        .publish());
+
+        assertThat(exception.getMessage()).isEqualTo("author id is required");
+    }
+
+    @Test
     void titleShouldValidateMaxLength() {
 
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> Post.builder()
+                        .author("aid")
                         .title(randomAlphanumeric(101))
                         .publish());
 
@@ -30,10 +51,11 @@ class PostTest {
     }
 
     @Test
-    void titleShouldValidateEmptyTitle() {
+    void titleShouldValidateEmpty() {
 
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> Post.builder()
+                        .author("aid")
                         .title("  ")
                         .publish());
 
@@ -41,10 +63,11 @@ class PostTest {
     }
 
     @Test
-    void titleShouldValidateNullTitle() {
+    void titleShouldValidateNull() {
 
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> Post.builder()
+                        .author("aid")
                         .publish());
 
         assertThat(exception.getMessage()).isEqualTo("title is required");
@@ -55,6 +78,7 @@ class PostTest {
 
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> Post.builder()
+                        .author("aid")
                         .title("Title")
                         .content(Content.html(""))
                         .publish());
@@ -67,6 +91,7 @@ class PostTest {
 
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> Post.builder()
+                        .author("aid")
                         .title("Title")
                         .content(Content.html("Some content"))
                         .tags("tag-1", "tag-2", "tag-3", "tag-4")
@@ -80,6 +105,7 @@ class PostTest {
 
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> Post.builder()
+                        .author("aid")
                         .title("Title")
                         .content(Content.html("Some content"))
                         .tags("tag-1", "this-tag-is-longer-than-25", "tag-3")
@@ -93,6 +119,7 @@ class PostTest {
 
         assertThrows(NullPointerException.class,
                 () -> Post.builder()
+                        .author("aid")
                         .title("Title")
                         .content(Content.html("Some content"))
                         .tags(null, "tag-2", "tag-3")
@@ -109,13 +136,13 @@ class PostTest {
         when(mockPublisher.publish(anyString(), anyMap())).thenReturn(mockPost);
 
         Post.builder()
-                .author("author-id")
+                .author("aid")
                 .title("Title")
                 .content(Content.html("content"))
                 .asDraft()
                 .publishVia(mockPublisher);
 
-        verify(mockPublisher).publish(eq("author-id"), paramsCaptured.capture());
+        verify(mockPublisher).publish(eq("aid"), paramsCaptured.capture());
         Map<String, Object> params = paramsCaptured.getValue();
         assertThat(params).containsEntry("publishStatus", "draft");
     }
@@ -130,13 +157,13 @@ class PostTest {
         when(mockPublisher.publish(anyString(), anyMap())).thenReturn(mockPost);
 
         Post.builder()
-                .author("author-id")
+                .author("aid")
                 .title("Title")
                 .content(Content.html("content"))
                 .asUnlisted()
                 .publishVia(mockPublisher);
 
-        verify(mockPublisher).publish(eq("author-id"), paramsCaptured.capture());
+        verify(mockPublisher).publish(eq("aid"), paramsCaptured.capture());
         Map<String, Object> params = paramsCaptured.getValue();
         assertThat(params).containsEntry("publishStatus", "unlisted");
     }

@@ -144,6 +144,11 @@ public final class Post {
         }
 
         private void validate(Builder builder) {
+
+            if (builder.authorId == null || "".equals(builder.authorId.trim())) {
+                throw new IllegalArgumentException("author id is required");
+            }
+
             if (builder.title == null || "".equals(builder.title.trim())) {
                 throw new IllegalArgumentException("title is required");
             }
