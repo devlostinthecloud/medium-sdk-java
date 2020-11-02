@@ -8,14 +8,14 @@ import java.util.Set;
 
 import static com.devlostncloud.medium.License.ALL_RIGHTS_RESERVED;
 import static com.devlostncloud.medium.PostPublisher.mediumPublisher;
+import static com.devlostncloud.medium.PublishStatus.DRAFT;
 import static com.devlostncloud.medium.PublishStatus.PUBLIC;
 
 public final class Post {
 
     private Data data;
 
-    private Post() {
-    }
+    private Post() { }
 
     public static Builder builder() {
         return new Builder();
@@ -65,7 +65,7 @@ public final class Post {
         private String title;
         private Content content;
         private String authorId;
-        private final PublishStatus status = PUBLIC;
+        private PublishStatus status = PUBLIC;
         private License license = ALL_RIGHTS_RESERVED;
         private Set<String> tags;
         private boolean notifyFollowers = false;
@@ -103,6 +103,11 @@ public final class Post {
 
         public Builder notifyFollowers() {
             this.notifyFollowers = true;
+            return this;
+        }
+
+        public Builder asDraft() {
+            this.status = DRAFT;
             return this;
         }
 
