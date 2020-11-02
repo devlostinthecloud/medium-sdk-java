@@ -119,4 +119,25 @@ class PostTest {
         Map<String, Object> params = paramsCaptured.getValue();
         assertThat(params).containsEntry("publishStatus", "draft");
     }
+
+    @Test
+    public void shouldSetPublishStatusAsUnlisted() {
+
+        PostPublisher mockPublisher = Mockito.mock(PostPublisher.class);
+        ArgumentCaptor<Map> paramsCaptured = ArgumentCaptor.forClass(Map.class);
+        Post mockPost = Mockito.mock(Post.class);
+
+        when(mockPublisher.publish(anyString(), anyMap())).thenReturn(mockPost);
+
+        Post.builder()
+                .author("author-id")
+                .title("Title")
+                .content(Content.html("content"))
+                .asUnlisted()
+                .publishVia(mockPublisher);
+
+        verify(mockPublisher).publish(eq("author-id"), paramsCaptured.capture());
+        Map<String, Object> params = paramsCaptured.getValue();
+        assertThat(params).containsEntry("publishStatus", "unlisted");
+    }
 }

@@ -10,6 +10,7 @@ import static com.devlostncloud.medium.License.ALL_RIGHTS_RESERVED;
 import static com.devlostncloud.medium.PostPublisher.mediumPublisher;
 import static com.devlostncloud.medium.PublishStatus.DRAFT;
 import static com.devlostncloud.medium.PublishStatus.PUBLIC;
+import static com.devlostncloud.medium.PublishStatus.UNLISTED;
 
 public final class Post {
 
@@ -108,6 +109,11 @@ public final class Post {
 
         public Builder asDraft() {
             this.status = DRAFT;
+            return this;
+        }
+
+        public Builder asUnlisted() {
+            this.status = UNLISTED;
             return this;
         }
 
